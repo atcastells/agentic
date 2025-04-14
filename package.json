@@ -1,0 +1,44 @@
+{
+  "name": "agentic",
+  "version": "0.1.0",
+  "description": "Agentic workspace for SPARC-based AI development workflows in VS Code.",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "undici-types": "^6.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts",
+    "dev": "nodemon src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atcastells/agentic.git"
+  },
+  "keywords": [
+    "sparc",
+    "ai",
+    "agentic",
+    "workflow",
+    "vscode"
+  ],
+  "author": "Roo Code",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/atcastells/agentic/issues"
+  },
+  "homepage": "https://github.com/atcastells/agentic#readme"
+}

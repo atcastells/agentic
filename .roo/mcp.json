@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "linear-mcp-server": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "linear-mcp-server",
+        "--config",
+        "{\"linearApiKey\":\"lin_api_gv9HUKP08GOaVgJtvYXSj6Yx6hjDkHwERNEdYeZn\"}"
+      ],
+      "disabled": true,
+      "alwaysAllow": []
+    }
+  }
+}
