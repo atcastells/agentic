@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    # Expose port for potential direct access if needed, but not required for inter-service communication
+    # ports:
+    #   - "27017:27017"
+
+  dev:
+    build:
+      context: .
+      # Add target: development if using multi-stage Dockerfile
+    depends_on:
+      - mongo
+      - ngrok
+    env_file: .env
+    environment:
+      NODE_ENV: development
+      # Override MONGODB_URI to point to the mongo service within the Docker network
+      MONGODB_URI: mongodb://mongo:27017/agentic # Assumes 'agentic' DB, adjust if needed or rely on .env
+      PORT: 3000 # Explicitly set or rely on .env default
+    volumes:
+      # Mount source code for hot-reloading. Assumes WORKDIR in Dockerfile is /app
+      - ./src:/app/src
+      # Mount package.json and lock file if needed for dependency changes without rebuild
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      # Mount node_modules as a volume to prevent local modules overwriting container modules
+      - /app/node_modules
+    ports:
+      - "3000:3000" # Map container port to host port
+    command: npm run dev
+    restart: unless-stopped
+
+  prod:
+    build:
+      context: .
+      # Add target: production if using multi-stage Dockerfile
+    depends_on:
+      - mongo
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      # Override MONGODB_URI to point to the mongo service
+      MONGODB_URI: mongodb://mongo:27017/agentic # Assumes 'agentic' DB, adjust if needed or rely on .env
+      PORT: 3000 # Explicitly set or rely on .env default
+    # No volume mounts for source code in production
+    command: npm start # Or node dist/index.js if that's the production entry point
+    restart: always
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    depends_on:
+      - dev
+    env_file: .env # For NGROK_AUTHTOKEN
+    environment:
+      # Pass the auth token from the .env file
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command: http dev:3000 # Expose the 'dev' service on its port 3000
+    ports:
+      - "4040:4040" # Expose the ngrok web UI
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
