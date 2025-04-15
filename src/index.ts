@@ -1,9 +1,7 @@
 import 'reflect-metadata';
 import mongoose from 'mongoose';
-import { Container } from 'typedi';
 import app from './infrastructure/web/app';
 import env from './config/env';
-import { MongoFlowRepository } from './infrastructure/repositories/MongoFlowRepository';
 
 // Connect to MongoDB
 async function startServer(): Promise<void> {

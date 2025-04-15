@@ -1,10 +1,17 @@
 import { Request, Response } from 'express';
 import { Service } from 'typedi';
 import { FlowService } from '../../../application/services/FlowService';
+import { CreateFlowUseCase } from '../../../application/usecases/flow/CreateFlowUseCase';
+import { CreateFlowDto } from '../../../application/dtos/CreateFlowDto';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Service()
 export class FlowController {
-  constructor(private flowService: FlowService) {}
+  constructor(
+    private flowService: FlowService,
+    private createFlowUseCase: CreateFlowUseCase
+  ) {}
 
   getAll = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -41,23 +48,35 @@ export class FlowController {
 
   create = async (req: Request, res: Response): Promise<void> => {
     try {
-      const flowData = req.body;
-      // Assuming we have a user ID from authentication middleware
+      const createFlowDto = plainToInstance(CreateFlowDto, req.body);
+
+      const errors = await validate(createFlowDto);
+      if (errors.length > 0) {
+        const errorMessages = errors.map(error => Object.values(error.constraints || {})).flat();
+        res.status(400).json({ error: 'Validation failed', details: errorMessages });
+        return;
+      }
+
       const userId = req.headers['user-id'] as string;
-      
-      const flow = await this.flowService.createFlow({
-        ...flowData,
-        userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+      if (!userId) {
+        res.status(400).json({ error: 'User ID not provided' });
+        return;
+      }
+
+      const flow = await this.createFlowUseCase.execute(createFlowDto, userId);
       
       res.status(201).json(flow);
     } catch (error) {
-      if (error instanceof Error && error.message.includes('not found')) {
-        res.status(404).json({ error: error.message });
+      if (error instanceof Error) {
+        if (error.message.includes('not found')) {
+          res.status(404).json({ error: error.message });
+        } else {
+          console.error('Error creating flow:', error);
+          res.status(500).json({ error: 'Failed to create flow' });
+        }
       } else {
-        res.status(500).json({ error: 'Failed to create flow' });
+        console.error('Unknown error creating flow:', error);
+        res.status(500).json({ error: 'An unexpected error occurred' });
       }
     }
   };
