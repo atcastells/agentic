@@ -2,37 +2,37 @@
  * @swagger
  * components:
  *   schemas:
- *     Flow:
+ *     Agent:
  *       type: object
  *       properties:
  *         id:
  *           type: string
- *           description: Unique identifier for the flow
+ *           description: Unique identifier for the agent
  *         name:
  *           type: string
- *           description: Name of the flow
+ *           description: Name of the agent
  *         description:
  *           type: string
- *           description: Optional description of the flow
+ *           description: Optional description of the agent
  *         version:
  *           type: string
- *           description: Version of the flow
+ *           description: Version of the agent
  *         definition:
- *           $ref: '#/components/schemas/FlowDefinition'
+ *           $ref: '#/components/schemas/AgentDefinition'
  *         createdAt:
  *           type: string
  *           format: date-time
- *           description: Date and time when the flow was created
+ *           description: Date and time when the agent was created
  *         updatedAt:
  *           type: string
  *           format: date-time
- *           description: Date and time when the flow was last updated
+ *           description: Date and time when the agent was last updated
  *         userId:
  *           type: string
- *           description: ID of the user who owns the flow
+ *           description: ID of the user who owns the agent
  *         isActive:
  *           type: boolean
- *           description: Whether the flow is active
+ *           description: Whether the agent is active
  *       required:
  *         - id
  *         - name
@@ -43,59 +43,59 @@
  *         - userId
  *         - isActive
  *
- *     CreateFlowDto:
+ *     CreateAgentDto:
  *       type: object
  *       properties:
  *         name:
  *           type: string
- *           description: Name of the flow
+ *           description: Name of the agent
  *         description:
  *           type: string
- *           description: Optional description of the flow
+ *           description: Optional description of the agent
  *         definition:
- *           $ref: '#/components/schemas/FlowDefinition'
+ *           $ref: '#/components/schemas/AgentDefinition'
  *       required:
  *         - name
  *         - definition
  *
- *     UpdateFlowDto:
+ *     UpdateAgentDto:
  *       type: object
  *       properties:
  *         name:
  *           type: string
- *           description: Name of the flow
+ *           description: Name of the agent
  *         description:
  *           type: string
- *           description: Description of the flow
+ *           description: Description of the agent
  *         definition:
- *           $ref: '#/components/schemas/FlowDefinition'
+ *           $ref: '#/components/schemas/AgentDefinition'
  *
- *     ExecuteFlowDto:
+ *     ExecuteAgentDto:
  *       type: object
  *       properties:
  *         inputs:
  *           type: object
- *           description: Input data for the flow execution
+ *           description: Input data for the agent execution
  *
- *     FlowDefinition:
+ *     AgentDefinition:
  *       type: object
  *       properties:
  *         steps:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/FlowStep'
+ *             $ref: '#/components/schemas/AgentStep'
  *         inputs:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/FlowInput'
+ *             $ref: '#/components/schemas/AgentInput'
  *         outputs:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/FlowOutput'
+ *             $ref: '#/components/schemas/AgentOutput'
  *       required:
  *         - steps
  *
- *     FlowStep:
+ *     AgentStep:
  *       type: object
  *       properties:
  *         id:
@@ -120,7 +120,7 @@
  *         - type
  *         - name
  *
- *     FlowInput:
+ *     AgentInput:
  *       type: object
  *       properties:
  *         name:
@@ -139,7 +139,7 @@
  *         - name
  *         - type
  *
- *     FlowOutput:
+ *     AgentOutput:
  *       type: object
  *       properties:
  *         name:
@@ -165,7 +165,7 @@
  *           example: "Jane Doe"
  *         email:
  *           type: string
- *           format: email
+ *           ormat: email
  *           description: Email address of the user
  *           example: "jane.doe@example.com"
  *         createdAt:

@@ -1,8 +1,8 @@
-import { IsArray, IsString, IsNotEmpty, ValidateNested, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 // Basic DTOs for nested structures - add more specific validation as needed
-class FlowStepDto {
+class AgentStepDto {
     @IsString()
     @IsNotEmpty()
     id!: string;
@@ -28,7 +28,7 @@ class FlowStepDto {
     next?: string[];
 }
 
-class FlowInputDto {
+class AgentInputDto {
     @IsString()
     @IsNotEmpty()
     name!: string;
@@ -44,7 +44,7 @@ class FlowInputDto {
     default?: unknown;
 }
 
-class FlowOutputDto {
+class AgentOutputDto {
     @IsString()
     @IsNotEmpty()
     name!: string;
@@ -54,19 +54,19 @@ class FlowOutputDto {
     type!: string;
 }
 
-export class FlowDefinitionDto {
+export class AgentDefinitionDto {
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => FlowStepDto)
-    steps!: FlowStepDto[];
+    @Type(() => AgentStepDto)
+    steps!: AgentStepDto[];
 
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => FlowInputDto)
-    inputs!: FlowInputDto[];
+    @Type(() => AgentInputDto)
+    inputs!: AgentInputDto[];
 
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => FlowOutputDto)
-    outputs!: FlowOutputDto[];
+    @Type(() => AgentOutputDto)
+    outputs!: AgentOutputDto[];
 } 

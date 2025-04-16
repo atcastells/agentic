@@ -1,6 +1,6 @@
 # Agentic
 
-A hosted platform for building and executing agentic software systems. Agentic provides a service where users can define autonomous agent flows through a web interface or configuration files, execute these flows via API, and get results without requiring any local SDK installation.
+A hosted platform for building and executing agentic software systems. Agentic provides a service where users can define autonomous agent agents through a web interface or configuration files, execute these agents via API, and get results without requiring any local SDK installation.
 
 ## Project Architecture
 
@@ -30,54 +30,62 @@ This project follows a hexagonal (ports and adapters) architecture pattern using
 ### Installation
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/yourusername/agentic.git
 cd agentic
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 4. Build the project
+
 ```bash
 npm run build
 ```
 
 5. Run the server
+
 ```bash
 npm start
 ```
 
 For development:
+
 ```bash
 npm run dev
 ```
 
 ## API Endpoints
 
-- `GET /api/flows` - List all flows
-- `GET /api/flows/:id` - Get flow details
-- `POST /api/flows` - Create a new flow
-- `PUT /api/flows/:id` - Update a flow
-- `DELETE /api/flows/:id` - Delete a flow
-- `POST /api/flows/:id/execute` - Execute a flow
+- `GET /api/agents` - List all agents
+- `GET /api/agents/:id` - Get agent details
+- `POST /api/agents` - Create a new agent
+- `PUT /api/agents/:id` - Update a agent
+- `DELETE /api/agents/:id` - Delete a agent
+- `POST /api/agents/:id/execute` - Execute a agent
 
 ## Development
 
 ### Running Tests
+
 ```bash
 npm test
 ```
 
 ### Linting
+
 ```bash
 npm run lint
 ```
@@ -92,4 +100,4 @@ npm run lint
 
 ## License
 
-This project is licensed under the ISC License. 
+This project is licensed under the ISC License.

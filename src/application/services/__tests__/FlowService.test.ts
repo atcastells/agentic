@@ -1,9 +1,9 @@
 import 'reflect-metadata';
-import { FlowService } from '../FlowService';
-import { Flow } from '../../../domain/entities/Flow';
+import { Agent } from '../../../domain/entities/Agent';
+import { AgentService } from '../AgentService';
 
 // Mock repository
-const mockFlowRepository = {
+const mockAgentRepository = {
   findById: jest.fn(),
   findAll: jest.fn(),
   findByUserId: jest.fn(),
@@ -12,19 +12,19 @@ const mockFlowRepository = {
   delete: jest.fn(),
 };
 
-describe('FlowService', () => {
-  let flowService: FlowService;
+describe('AgentService', () => {
+  let agentService: AgentService;
   
   beforeEach(() => {
     jest.clearAllMocks();
-    flowService = new FlowService(mockFlowRepository as any);
+    agentService = new AgentService(mockAgentRepository as any);
   });
   
-  describe('getFlowById', () => {
-    it('should return a flow when it exists', async () => {
-      const mockFlow: Flow = {
+  describe('getAgentById', () => {
+    it('should return a agent when it exists', async () => {
+      const mockAgent: Agent = {
         id: '1',
-        name: 'Test Flow',
+        name: 'Test Agent',
         version: '1.0.0',
         definition: {
           steps: [],
@@ -37,37 +37,37 @@ describe('FlowService', () => {
         isActive: true,
       };
       
-      mockFlowRepository.findById.mockResolvedValue(mockFlow);
+      mockAgentRepository.findById.mockResolvedValue(mockAgent);
       
-      const result = await flowService.getFlowById('1');
+      const result = await agentService.getAgentById('1');
       
-      expect(result).toEqual(mockFlow);
-      expect(mockFlowRepository.findById).toHaveBeenCalledWith('1');
+      expect(result).toEqual(mockAgent);
+      expect(mockAgentRepository.findById).toHaveBeenCalledWith('1');
     });
     
-    it('should return null when flow does not exist', async () => {
-      mockFlowRepository.findById.mockResolvedValue(null);
+    it('should return null when agent does not exist', async () => {
+      mockAgentRepository.findById.mockResolvedValue(null);
       
-      const result = await flowService.getFlowById('nonexistent');
+      const result = await agentService.getAgentById('nonexistent');
       
       expect(result).toBeNull();
-      expect(mockFlowRepository.findById).toHaveBeenCalledWith('nonexistent');
+      expect(mockAgentRepository.findById).toHaveBeenCalledWith('nonexistent');
     });
   });
   
-  describe('executeFlow', () => {
-    it('should throw error when flow does not exist', async () => {
-      mockFlowRepository.findById.mockResolvedValue(null);
+  describe('executeAgent', () => {
+    it('should throw error when agent does not exist', async () => {
+      mockAgentRepository.findById.mockResolvedValue(null);
       
-      await expect(flowService.executeFlow('nonexistent', {}))
+      await expect(agentService.executeAgent('nonexistent', {}))
         .rejects
-        .toThrow('Flow with id nonexistent not found');
+        .toThrow('Agent with id nonexistent not found');
     });
     
-    it('should execute flow and return result', async () => {
-      const mockFlow: Flow = {
+    it('should execute agent and return result', async () => {
+      const mockAgent: Agent = {
         id: '1',
-        name: 'Test Flow',
+        name: 'Test Agent',
         version: '1.0.0',
         definition: {
           steps: [],
@@ -80,13 +80,13 @@ describe('FlowService', () => {
         isActive: true,
       };
       
-      mockFlowRepository.findById.mockResolvedValue(mockFlow);
+      mockAgentRepository.findById.mockResolvedValue(mockAgent);
       
       const inputs = { key: 'value' };
-      const result = await flowService.executeFlow('1', inputs);
+      const result = await agentService.executeAgent('1', inputs);
       
       expect(result).toHaveProperty('success', true);
-      expect(result).toHaveProperty('flowId', '1');
+      expect(result).toHaveProperty('agentId', '1');
       expect(result).toHaveProperty('executionId');
       expect(result).toHaveProperty('outputs.result');
     });

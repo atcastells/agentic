@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { LLMProvider, LLMPrompt, LLMResponse } from '../../domain/services/LLMProvider';
 import env from '../../config/env';
+import { LLMPrompt, LLMProvider, LLMResponse } from '../../domain/services/LLMProvider';
 
 @Service()
 export class OpenRouterLLMProvider implements LLMProvider {
@@ -13,6 +13,8 @@ export class OpenRouterLLMProvider implements LLMProvider {
     this.apiKey = env.OPENROUTER_API_KEY || '';
     if (!this.apiKey) {
       console.warn('OpenRouter API key not provided. This provider will not work correctly.');
+    } else {
+      console.log('OpenRouter API key provided.');
     }
 
     //list models on startup

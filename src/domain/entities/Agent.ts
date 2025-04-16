@@ -1,22 +1,22 @@
-export interface Flow {
+export interface Agent {
   id: string;
   name: string;
   description?: string;
   version: string;
-  definition: FlowDefinition;
+  definition: AgentDefinition;
   createdAt: Date;
   updatedAt: Date;
   userId: string;
   isActive: boolean;
 }
 
-export interface FlowDefinition {
-  steps: FlowStep[];
-  inputs: FlowInput[];
-  outputs: FlowOutput[];
+export interface AgentDefinition {
+  steps: AgentStep[];
+  inputs: AgentInput[];
+  outputs: AgentOutput[];
 }
 
-export interface FlowStep {
+export interface AgentStep {
   id: string;
   type: string;
   name: string;
@@ -25,14 +25,14 @@ export interface FlowStep {
   provider?: string;
 }
 
-export interface FlowInput {
+export interface AgentInput {
   name: string;
   type: string;
   required: boolean;
   default?: unknown;
 }
 
-export interface FlowOutput {
+export interface AgentOutput {
   name: string;
   type: string;
-} 
+}

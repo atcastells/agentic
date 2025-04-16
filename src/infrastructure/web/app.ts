@@ -1,9 +1,9 @@
-import express, { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
-import 'express-async-errors';
 import { json, urlencoded } from 'body-parser';
-import swaggerUi from 'swagger-ui-express';
+import express, { ErrorRequestHandler, Request, Response } from 'express';
+import 'express-async-errors';
 import swaggerJsdoc from 'swagger-jsdoc';
-import flowRoutes from './routes/flowRoutes';
+import swaggerUi from 'swagger-ui-express';
+import agentRoutes from './routes/agentRoutes';
 import userRoutes from './routes/userRoutes';
 
 // Custom error class for API errors
@@ -29,9 +29,9 @@ const setupSwagger = () => {
     definition: {
       openapi: '3.0.0',
       info: {
-        title: 'Flow API',
+        title: 'Agent API',
         version: '1.0.0',
-        description: 'API documentation for Flow service',
+        description: 'API documentation for Agent service',
       },
       servers: [
         {
@@ -67,7 +67,7 @@ const setupRoutes = () => {
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   
   // API routes
-  app.use('/api/flows', flowRoutes);
+  app.use('/api/agents', agentRoutes);
   app.use('/api/users', userRoutes);
   
   // 404 handler for undefined routes
