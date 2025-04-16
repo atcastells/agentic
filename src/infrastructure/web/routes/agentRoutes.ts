@@ -98,6 +98,7 @@ router.get('/:id', asyncHandler(async (req: Request, res: Response) => {
  *         description: Invalid input data
  */
 router.post('/', asyncHandler(async (req: Request, res: Response) => {
+  console.log('req.body', req.body);
   const agentController = Container.get<AgentController>(AGENT_CONTROLLER);
   const createAgentDto: CreateAgentDto = req.body;
   const userId = req.headers['user-id'] as string | undefined;

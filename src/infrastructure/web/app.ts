@@ -1,11 +1,11 @@
 import { json, urlencoded } from 'body-parser';
+import cors from 'cors';
 import express, { ErrorRequestHandler, Request, Response } from 'express';
 import 'express-async-errors';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import agentRoutes from './routes/agentRoutes';
 import userRoutes from './routes/userRoutes';
-
 // Custom error class for API errors
 export class ApiError extends Error {
   status: number;
@@ -56,6 +56,7 @@ const setupMiddleware = () => {
   // Request parsing
   app.use(json());
   app.use(urlencoded({ extended: true }));
+  app.use(cors({ origin: 'http://localhost:3333/' }));
 }
 
 /**
