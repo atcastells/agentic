@@ -151,4 +151,35 @@
  *       required:
  *         - name
  *         - type
+ *
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the user
+ *           example: "user_12345"
+ *         name:
+ *           type: string
+ *           description: Name of the user
+ *           example: "Jane Doe"
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email address of the user
+ *           example: "jane.doe@example.com"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Date and time when the user was created
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Date and time when the user was last updated
+ *       required:
+ *         - id
+ *         - name
+ *         - email
+ *         - createdAt
+ *         - updatedAt
  */ 

@@ -4,6 +4,7 @@ import { json, urlencoded } from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import flowRoutes from './routes/flowRoutes';
+import userRoutes from './routes/userRoutes';
 
 // Custom error class for API errors
 export class ApiError extends Error {
@@ -23,7 +24,7 @@ const app = express();
 /**
  * Configure Swagger documentation
  */
-function setupSwagger() {
+const setupSwagger = () => {
   const swaggerOptions = {
     definition: {
       openapi: '3.0.0',
@@ -51,7 +52,7 @@ function setupSwagger() {
 /**
  * Configure application middleware
  */
-function setupMiddleware() {
+const setupMiddleware = () => {
   // Request parsing
   app.use(json());
   app.use(urlencoded({ extended: true }));
@@ -60,13 +61,14 @@ function setupMiddleware() {
 /**
  * Configure API routes
  */
-function setupRoutes() {
+const setupRoutes = () => {
   // Swagger documentation
   const swaggerSpec = setupSwagger();
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   
   // API routes
   app.use('/api/flows', flowRoutes);
+  app.use('/api/users', userRoutes);
   
   // 404 handler for undefined routes
   app.use((req: Request, res: Response) => {
@@ -80,7 +82,7 @@ function setupRoutes() {
 /**
  * Configure error handling middleware
  */
-function setupErrorHandling() {
+const setupErrorHandling = () => {
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     // Log the error
     console.error(`[ERROR] ${err.name}: ${err.message}`);
