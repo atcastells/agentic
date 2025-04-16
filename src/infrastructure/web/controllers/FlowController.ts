@@ -1,144 +1,90 @@
-import { Request, Response } from 'express';
-import { Service } from 'typedi';
+import Container, { Inject, Service } from 'typedi';
 import { FlowService } from '../../../application/services/FlowService';
-import { CreateFlowUseCase } from '../../../application/usecases/flow/CreateFlowUseCase';
 import { CreateFlowDto } from '../../../application/dtos/CreateFlowDto';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { UpdateFlowDto } from '../../../application/dtos/UpdateFlowDto';
+import { ExecuteFlowDto } from '../../../application/dtos/ExecuteFlowDto';
+import { FLOW_SERVICE, CREATE_FLOW_USE_CASE, GET_ALL_FLOWS_USE_CASE, GET_FLOW_BY_ID_USE_CASE, UPDATE_FLOW_USE_CASE, DELETE_FLOW_USE_CASE, EXECUTE_FLOW_USE_CASE, FLOW_CONTROLLER } from '../../../constants';
+import { GetFlowByIdUseCase } from '../../../application/usecases/flow/GetFlowByIdUseCase';
+import { CreateFlowUseCase } from '../../../application/usecases/flow/CreateFlowUseCase';
+import { GetAllFlowsUseCase } from '../../../application/usecases/flow/GetAllFlowsUseCase';
+import { DeleteFlowUseCase } from '../../../application/usecases/flow/DeleteFlowUseCase';
+import { ExecuteFlowUseCase } from '../../../application/usecases/flow/ExecuteFlowUseCase';
+import { UpdateFlowUseCase } from '../../../application/usecases/flow/UpdateFlowUseCase';
 
-@Service()
+@Service(FLOW_CONTROLLER)
 export class FlowController {
+  private createFlowUseCase = Container.get<CreateFlowUseCase>(CREATE_FLOW_USE_CASE);
+  private getAllFlowsUseCase = Container.get<GetAllFlowsUseCase>(GET_ALL_FLOWS_USE_CASE);
+  private getFlowByIdUseCase = Container.get<GetFlowByIdUseCase>(GET_FLOW_BY_ID_USE_CASE);
+  private updateFlowUseCase = Container.get<UpdateFlowUseCase>(UPDATE_FLOW_USE_CASE);
+  private deleteFlowUseCase = Container.get<DeleteFlowUseCase>(DELETE_FLOW_USE_CASE);
+  private executeFlowUseCase = Container.get<ExecuteFlowUseCase>(EXECUTE_FLOW_USE_CASE);
   constructor(
-    private flowService: FlowService,
-    private createFlowUseCase: CreateFlowUseCase
+    @Inject(FLOW_SERVICE) private flowService: FlowService,
+
   ) {}
 
-  getAll = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const flows = await this.flowService.getAllFlows();
-      res.status(200).json(flows);
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('not found')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Failed to retrieve flows' });
-      }
+  /**
+   * Get all flows
+   */
+  public async getAll(): Promise<any[]> {
+    return this.getAllFlowsUseCase.execute();
+  }
+
+  /**
+   * Get a flow by ID
+   */
+  public async getById(id: string): Promise<any> {
+    const flow = await this.getFlowByIdUseCase.execute(id);
+    if (!flow) {
+      throw { status: 404, message: 'Flow not found' };
     }
-  };
+    return flow;
+  }
 
-  getById = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const flow = await this.flowService.getFlowById(id);
-      
-      if (!flow) {
-        res.status(404).json({ error: 'Flow not found' });
-        return;
-      }
-      
-      res.status(200).json(flow);
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('not found')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Failed to retrieve flow' });
-      }
+  /**
+   * Create a new flow
+   */
+  public async create(
+    createFlowDto: CreateFlowDto,
+    userId?: string
+  ): Promise<any> {
+    if (!userId) {
+      throw { status: 400, message: 'User ID not provided' };
     }
-  };
+    return this.createFlowUseCase.execute(createFlowDto, userId);
+  }
 
-  create = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const createFlowDto = plainToInstance(CreateFlowDto, req.body);
-
-      const errors = await validate(createFlowDto);
-      if (errors.length > 0) {
-        const errorMessages = errors.map(error => Object.values(error.constraints || {})).flat();
-        res.status(400).json({ error: 'Validation failed', details: errorMessages });
-        return;
-      }
-
-      const userId = req.headers['user-id'] as string;
-      if (!userId) {
-        res.status(400).json({ error: 'User ID not provided' });
-        return;
-      }
-
-      const flow = await this.createFlowUseCase.execute(createFlowDto, userId);
-      
-      res.status(201).json(flow);
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message.includes('not found')) {
-          res.status(404).json({ error: error.message });
-        } else {
-          console.error('Error creating flow:', error);
-          res.status(500).json({ error: 'Failed to create flow' });
-        }
-      } else {
-        console.error('Unknown error creating flow:', error);
-        res.status(500).json({ error: 'An unexpected error occurred' });
-      }
+  /**
+   * Update a flow
+   */
+  public async update(id: string, updateFlowDto: UpdateFlowDto): Promise<any> {
+    const updatedFlow = await this.updateFlowUseCase.execute(id, updateFlowDto);
+    if (!updatedFlow) {
+      throw { status: 404, message: 'Flow not found' };
     }
-  };
+    return updatedFlow;
+  }
 
-  update = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const flowData = req.body;
-      
-      const updatedFlow = await this.flowService.updateFlow(id, {
-        ...flowData,
-        updatedAt: new Date(),
-      });
-      
-      if (!updatedFlow) {
-        res.status(404).json({ error: 'Flow not found' });
-        return;
-      }
-      
-      res.status(200).json(updatedFlow);
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('not found')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Failed to update flow' });
-      }
+  /**
+   * Delete a flow
+   */
+  public async delete(id: string): Promise<void> {
+    const success = await this.deleteFlowUseCase.execute(id);
+    if (!success) {
+      throw { status: 404, message: 'Flow not found or could not be deleted' };
     }
-  };
+    // No return needed for 204
+  }
 
-  delete = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const result = await this.flowService.deleteFlow(id);
-      
-      if (!result) {
-        res.status(404).json({ error: 'Flow not found' });
-        return;
-      }
-      
-      res.status(204).send();
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('not found')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Failed to delete flow' });
-      }
+  /**
+   * Execute a flow
+   */
+  public async execute(id: string, executeFlowDto: ExecuteFlowDto): Promise<any> {
+    const result = await this.executeFlowUseCase.execute(id, executeFlowDto);
+    if (result && result.success === false) {
+      throw { status: 500, message: result.error || 'Failed to execute flow' };
     }
-  };
-
-  execute = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const inputs = req.body;
-      
-      const result = await this.flowService.executeFlow(id, inputs);
-      res.status(200).json(result);
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('not found')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Failed to execute flow' });
-      }
-    }
-  };
+    return result;
+  }
 }

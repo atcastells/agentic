@@ -18,8 +18,6 @@ export class OpenRouterLLMProvider implements LLMProvider {
     //list models on startup
     this.listModels().then(models => {
       this.models = models.filter(model => model.includes('free'));
-
-      console.log('Available models:', this.models);
     });
   }
   
@@ -28,7 +26,7 @@ export class OpenRouterLLMProvider implements LLMProvider {
       throw new Error('OpenRouter API key not configured');
     }
     
-    const model = prompt.model || 'openai/gpt-3.5-turbo';
+    const model = prompt.model || 'openai/gpt-4o-mini';
     const systemPrompt = prompt.systemPrompt || 'You are a helpful assistant.';
     
     try {

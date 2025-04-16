@@ -14,7 +14,6 @@ export interface FlowDefinition {
   steps: FlowStep[];
   inputs: FlowInput[];
   outputs: FlowOutput[];
-  llmProvider: string;
 }
 
 export interface FlowStep {
@@ -23,6 +22,7 @@ export interface FlowStep {
   name: string;
   config: Record<string, unknown>;
   next?: string[];
+  provider?: string;
 }
 
 export interface FlowInput {

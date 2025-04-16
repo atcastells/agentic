@@ -1,6 +1,6 @@
 import { Flow } from '../entities/Flow';
 
-export interface FlowRepository {
+export interface IFlowRepository {
   findById(id: string): Promise<Flow | null>;
   findAll(): Promise<Flow[]>;
   findByUserId(userId: string): Promise<Flow[]>;

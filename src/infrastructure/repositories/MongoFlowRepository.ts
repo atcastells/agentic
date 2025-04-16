@@ -1,7 +1,8 @@
 import { Service } from 'typedi';
 import mongoose, { Schema, Document } from 'mongoose';
 import { Flow } from '../../domain/entities/Flow';
-import { FlowRepository } from '../../domain/repositories/FlowRepository';
+import { IFlowRepository } from '../../domain/repositories/FlowRepository';
+import { FLOW_REPOSITORY } from '../../constants';
 
 interface FlowDocument extends Document, Omit<Flow, 'id'> {
   // MongoDB document has _id
@@ -19,6 +20,7 @@ const FlowSchema = new Schema(
           type: { type: String, required: true },
           name: { type: String, required: true },
           config: { type: Object, required: true },
+          provider: { type: String },
           next: [{ type: String }],
         },
       ],
@@ -36,7 +38,6 @@ const FlowSchema = new Schema(
           type: { type: String, required: true },
         },
       ],
-      llmProvider: { type: String, required: true },
     },
     userId: { type: String, required: true },
     isActive: { type: Boolean, default: true },
@@ -44,40 +45,44 @@ const FlowSchema = new Schema(
   { timestamps: true }
 );
 
-const FlowModel = mongoose.model<FlowDocument>('Flow', FlowSchema);
 
-@Service()
-export class MongoFlowRepository implements FlowRepository {
+@Service(FLOW_REPOSITORY)
+export class MongoFlowRepository implements IFlowRepository {
+  private flowModel: mongoose.Model<FlowDocument>;
+  constructor() {
+    this.flowModel = mongoose.model<FlowDocument>('Flow', FlowSchema);
+  }
+
   async findById(id: string): Promise<Flow | null> {
-    const flow = await FlowModel.findById(id);
+    const flow = await this.flowModel.findById(id);
     if (!flow) return null;
     return this.mapToEntity(flow);
   }
 
   async findAll(): Promise<Flow[]> {
-    const flows = await FlowModel.find();
+    const flows = await this.flowModel.find();
     return flows.map(this.mapToEntity);
   }
 
   async findByUserId(userId: string): Promise<Flow[]> {
-    const flows = await FlowModel.find({ userId });
+    const flows = await this.flowModel.find({ userId });
     return flows.map(this.mapToEntity);
   }
 
   async create(flowData: Omit<Flow, 'id'>): Promise<Flow> {
-    const flow = new FlowModel(flowData);
+    const flow = new this.flowModel(flowData);
     await flow.save();
     return this.mapToEntity(flow);
   }
 
   async update(id: string, flowData: Partial<Flow>): Promise<Flow | null> {
-    const flow = await FlowModel.findByIdAndUpdate(id, flowData, { new: true });
+    const flow = await this.flowModel.findByIdAndUpdate(id, flowData, { new: true });
     if (!flow) return null;
     return this.mapToEntity(flow);
   }
 
   async delete(id: string): Promise<boolean> {
-    const result = await FlowModel.findByIdAndDelete(id);
+    const result = await this.flowModel.findByIdAndDelete(id);
     return !!result;
   }
 

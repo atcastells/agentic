@@ -12,7 +12,11 @@ export class LLMProviderController {
       const providers = this.llmProviderFactory.getAllProviderNames();
       res.status(200).json(providers);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to list LLM providers' });
+      if (error instanceof Error && error.message.includes('not found')) {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Failed to list LLM providers' });
+      }
     }
   };
 
@@ -25,10 +29,18 @@ export class LLMProviderController {
         const models = await llmProvider.listModels();
         res.status(200).json(models);
       } catch (error) {
-        res.status(404).json({ error: `Provider '${provider}' not found` });
+        if (error instanceof Error && error.message.includes('not found')) {
+          res.status(404).json({ error: error.message });
+        } else {
+          throw error;
+        }
       }
     } catch (error) {
-      res.status(500).json({ error: 'Failed to list models' });
+      if (error instanceof Error && error.message.includes('not found')) {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Failed to list models' });
+      }
     }
   };
 

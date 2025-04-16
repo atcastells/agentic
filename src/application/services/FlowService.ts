@@ -1,10 +1,11 @@
-import { Service } from 'typedi';
+import { Service, Inject } from 'typedi';
 import { Flow } from '../../domain/entities/Flow';
-import { FlowRepository } from '../../domain/repositories/FlowRepository';
+import { IFlowRepository } from '../../domain/repositories/FlowRepository';
+import { FLOW_REPOSITORY, FLOW_SERVICE } from '../../constants';
 
-@Service()
+@Service(FLOW_SERVICE)
 export class FlowService {
-  constructor(private flowRepository: FlowRepository) {}
+  constructor(@Inject(FLOW_REPOSITORY) private flowRepository: IFlowRepository) {}
 
   async getFlowById(id: string): Promise<Flow | null> {
     return this.flowRepository.findById(id);

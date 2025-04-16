@@ -1,11 +1,11 @@
-import { Service } from 'typedi';
+import { Service, Inject } from 'typedi';
 import { FlowService } from '../../services/FlowService'; // Adjust path if necessary
 import { CreateFlowDto } from '../../dtos/CreateFlowDto';
 import { Flow } from '../../../domain/entities/Flow'; // Assuming Flow entity path
-
-@Service()
+import { CREATE_FLOW_USE_CASE, FLOW_SERVICE } from '../../../constants';
+@Service(CREATE_FLOW_USE_CASE)
 export class CreateFlowUseCase {
-  constructor(private flowService: FlowService) {}
+  constructor(@Inject(FLOW_SERVICE) private flowService: FlowService) {}
 
   async execute(data: CreateFlowDto, userId: string): Promise<Flow> {
     const flowData = {

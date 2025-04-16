@@ -151,7 +151,7 @@ export class FlowExecutionService {
       
       switch (step.type) {
       case 'llm':
-        stepResult = await this.executeLLMStep(step, flow, context);
+        stepResult = await this.executeLLMStep(step, context);
         break;
       case 'transform':
         stepResult = this.executeTransformStep(step, context);
@@ -190,19 +190,17 @@ export class FlowExecutionService {
    * Example:
    * // step config: { providerName: 'openai', prompt: "Summarize: {{inputs.document}}", model: "gpt-4" }
    * // context.inputs: { document: "Long text..." }
-   * // result = await this.executeLLMStep(step, flow, context); // result might be { text: "Short summary..." }
+   * // result = await this.executeLLMStep(step, context); // result might be { text: "Short summary..." }
    *
    * @param step - The LLM step definition.
-   * @param flow - The overall flow definition (used for default provider).
    * @param context - The current execution context.
    * @returns A promise that resolves to the result from the LLM provider.
    */
   private async executeLLMStep(
     step: FlowStep,
-    flow: Flow,
     context: ExecutionContext
   ): Promise<any> {
-    const { providerName = flow.definition.llmProvider, prompt, systemPrompt, temperature, maxTokens, model } = step.config;
+    const { providerName = step.provider, prompt, systemPrompt, temperature, maxTokens, model } = step.config;
     
     // Replace variables in prompt
     const resolvedPrompt = this.resolveVariables(prompt as string, context);

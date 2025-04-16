@@ -1,0 +1,18 @@
+// Repositories
+export const FLOW_REPOSITORY = 'FLOW_REPOSITORY';
+
+
+// Services
+export const FLOW_SERVICE = 'FLOW_SERVICE';
+
+
+// Use Cases
+export const CREATE_FLOW_USE_CASE = 'CREATE_FLOW_USE_CASE';
+export const GET_ALL_FLOWS_USE_CASE = 'GET_ALL_FLOWS_USE_CASE';
+export const GET_FLOW_BY_ID_USE_CASE = 'GET_FLOW_BY_ID_USE_CASE';
+export const UPDATE_FLOW_USE_CASE = 'UPDATE_FLOW_USE_CASE';
+export const DELETE_FLOW_USE_CASE = 'DELETE_FLOW_USE_CASE';
+export const EXECUTE_FLOW_USE_CASE = 'EXECUTE_FLOW_USE_CASE';
+
+// Controllers
+export const FLOW_CONTROLLER = 'FLOW_CONTROLLER';

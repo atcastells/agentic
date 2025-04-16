@@ -19,6 +19,10 @@ class FlowStepDto {
     config!: Record<string, unknown>; 
 
     @IsOptional()
+    @IsString()
+    provider?: string;
+
+    @IsOptional()
     @IsArray()
     @IsString({ each: true })
     next?: string[];
@@ -65,8 +69,4 @@ export class FlowDefinitionDto {
     @ValidateNested({ each: true })
     @Type(() => FlowOutputDto)
     outputs!: FlowOutputDto[];
-
-    @IsString()
-    @IsNotEmpty()
-    llmProvider!: string;
 } 
